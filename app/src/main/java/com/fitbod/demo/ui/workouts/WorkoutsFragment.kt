@@ -30,9 +30,9 @@ class WorkoutsFragment : Fragment() {
         workoutsFragmentViewModel =
             ViewModelProvider(this).get(WorkoutsFragmentViewModel::class.java)
 
-        workoutsFragmentViewModel.text.observe(viewLifecycleOwner, Observer {
-            //
-        })
+//        workoutsFragmentViewModel.text.observe(viewLifecycleOwner, Observer {
+//            //
+//        })
 
         workoutAdapter = WorkoutsAdapter(emptyList())
         val workoutLayoutManager = LinearLayoutManager(requireContext())

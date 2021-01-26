@@ -13,6 +13,7 @@ data class UserWorkout(
     var sets: Int = 0,
     var reps: Int = 0,
     var weight: Int = 0,
-    var workoutId: Int = 0
+    var workoutId: Int = 0,
+    var oneRepMax: Int = 0
 
 )
