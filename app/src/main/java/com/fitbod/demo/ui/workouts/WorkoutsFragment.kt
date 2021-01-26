@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.fitbod.demo.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.fitbod.demo.databinding.FragmentWorkoutsBinding
 
 class WorkoutsFragment : Fragment() {
+
+    private var _binding: FragmentWorkoutsBinding? = null
+    private val binding get() = _binding!!
+
+    private var workoutAdapter: WorkoutsAdapter? = null
 
     private lateinit var workoutsFragmentViewModel: WorkoutsFragmentViewModel
 
@@ -18,14 +23,32 @@ class WorkoutsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
+        _binding = FragmentWorkoutsBinding.inflate(inflater, container, false)
+
         workoutsFragmentViewModel =
             ViewModelProvider(this).get(WorkoutsFragmentViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_workouts, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
+
         workoutsFragmentViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+            //
         })
-        return root
+
+        workoutAdapter = WorkoutsAdapter(emptyList())
+        val workoutLayoutManager = LinearLayoutManager(requireContext())
+
+        binding.recyclerview.apply {
+            layoutManager = workoutLayoutManager
+            adapter = workoutAdapter
+        }
+
+        return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        workoutAdapter = null
     }
 }

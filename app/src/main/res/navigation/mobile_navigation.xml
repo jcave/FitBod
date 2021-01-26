@@ -11,7 +11,7 @@
         android:label="@string/menu_workouts"
         tools:layout="@layout/fragment_workouts">
         <action
-            android:id="@+id/action_nav_home_to_nav_slideshow"
+            android:id="@+id/action_workouts_to_exercise"
             app:destination="@id/nav_exercise" />
     </fragment>
 
