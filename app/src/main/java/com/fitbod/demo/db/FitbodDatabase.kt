@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.fitbod.demo.db.dao.UserWorkoutDao
 import com.fitbod.demo.db.dao.WorkoutDao
+import com.fitbod.demo.db.dao.WorkoutsWithUserWorkoutsDao
 import com.fitbod.demo.db.models.UserWorkout
 import com.fitbod.demo.db.models.Workout
 import com.fitbod.demo.db.typeConverters.DateConverter
@@ -18,6 +19,7 @@ abstract class FitbodDatabase : RoomDatabase() {
 
     abstract fun userWorkoutDao(): UserWorkoutDao
     abstract fun workoutDao(): WorkoutDao
+    abstract fun workoutsWithUserWorkoutsDao(): WorkoutsWithUserWorkoutsDao
 
     companion object {
         @Volatile

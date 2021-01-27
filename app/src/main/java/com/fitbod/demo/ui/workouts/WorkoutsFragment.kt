@@ -30,9 +30,9 @@ class WorkoutsFragment : Fragment() {
         workoutsFragmentViewModel =
             ViewModelProvider(this).get(WorkoutsFragmentViewModel::class.java)
 
-        workoutsFragmentViewModel.userWorkouts.observe(viewLifecycleOwner, { userWorkouts ->
-            updateAdapter(userWorkouts)
-            if (userWorkouts.isEmpty()) {
+        workoutsFragmentViewModel.workoutViewModels.observe(viewLifecycleOwner, { workoutViewModels ->
+            updateAdapter(workoutViewModels)
+            if (workoutViewModels.isEmpty()) {
                 binding.buttonLoad.visibility = View.VISIBLE
             }
         })
@@ -54,7 +54,7 @@ class WorkoutsFragment : Fragment() {
         return binding.root
     }
 
-    private fun updateAdapter(userWorkouts: List<UserWorkout>) {
+    private fun updateAdapter(userWorkouts: List<WorkoutViewModel>) {
         binding.progressBar.visibility = View.INVISIBLE
         binding.buttonLoad.visibility = View.INVISIBLE
         workoutAdapter?.update(userWorkouts)

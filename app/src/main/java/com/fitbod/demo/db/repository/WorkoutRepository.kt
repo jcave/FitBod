@@ -9,6 +9,7 @@ import com.fitbod.demo.db.FitbodDatabase
 import com.fitbod.demo.db.models.UserDataRecord
 import com.fitbod.demo.db.models.UserWorkout
 import com.fitbod.demo.db.models.Workout
+import com.fitbod.demo.db.models.WorkoutsWithUserWorkouts
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -22,8 +23,11 @@ class WorkoutRepository(application: Application) {
     private val db = FitbodDatabase.getDatabase(application)
     private val userWorkoutDao = db.userWorkoutDao()
     private val workoutDao = db.workoutDao()
+    private val workoutsWithUserWorkoutsDao = db.workoutsWithUserWorkoutsDao()
 
-    val getWorkouts: LiveData<List<UserWorkout>> = userWorkoutDao.getUserWorkouts()
+    val workoutsWithUserWorkouts: LiveData<List<WorkoutsWithUserWorkouts>> =
+        workoutsWithUserWorkoutsDao.getWorkoutsWithUserWorkouts()
+    val userWorkouts: LiveData<List<UserWorkout>> = userWorkoutDao.getUserWorkouts()
 
     private fun insertUserWorkouts(userWorkouts: List<UserWorkout>) {
         userWorkoutDao.insertAllUserWorkouts(userWorkouts)
@@ -121,15 +125,12 @@ class WorkoutRepository(application: Application) {
     }
 
     private fun calcOneRM(reps: Int, weight: Int): Int {
-        return (weight.toDouble() * (36 / (37 - reps))).toInt()
+        return (weight.toDouble() * (36.0 / (37.0 - reps))).toInt()
     }
 
     private fun parseDate(date: String): Date? {
         //"Nov 07 2016"
         val originalDate = SimpleDateFormat("MMM dd yy")
-
-        val parsedDate = originalDate.parse(date)
-        Log.i("WORKOUT", "date: ${parsedDate.toString()}")
-        return parsedDate
+        return originalDate.parse(date)
     }
 }

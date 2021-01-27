@@ -1,6 +1,7 @@
 package com.fitbod.demo.ui.workouts
 
 class WorkoutViewModel(
-    var name: String = "",
-    var record: Int = 0
+    var workoutId: Int = 0,
+    var workoutName: String = "",
+    var oneRepMax: Int = 0
 )
