@@ -69,6 +69,14 @@ class ExerciseFragment : Fragment() {
         binding.workoutInfo.txtRecord.text =
             workoutData.userWorkouts.maxByOrNull { it.oneRepMax }?.oneRepMax.toString()
 
+        binding.dataChart.data = buildChartData(workoutData.userWorkouts)
+        binding.dataChart.invalidate()
+        binding.dataChart.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+    }
+
+    private fun buildChartData(userWorkouts: List<UserWorkout>): LineData {
+
         val colorIdRed = requireContext().getColor(R.color.fitbod_red)
         val colorIdGrey = requireContext().getColor(R.color.greyDark)
 
@@ -98,7 +106,7 @@ class ExerciseFragment : Fragment() {
             legend.isEnabled = false
         }
 
-        val entries = calculateDataSetEntries(workoutData.userWorkouts)
+        val entries = calculateDataSetEntries(userWorkouts)
         val dataSet = LineDataSet(entries, "").apply {
             color = colorIdRed
             setDrawHighlightIndicators(true)
@@ -112,12 +120,7 @@ class ExerciseFragment : Fragment() {
         }
 
         val dataSets = arrayListOf<ILineDataSet>(dataSet)
-        val data = LineData(dataSets)
-
-        binding.dataChart.data = data
-        binding.dataChart.invalidate()
-        binding.dataChart.visibility = View.VISIBLE
-        binding.progressBar.visibility = View.INVISIBLE
+        return LineData(dataSets)
     }
 
     private fun calculateDataSetEntries(userWorkouts: List<UserWorkout>): List<Entry> {

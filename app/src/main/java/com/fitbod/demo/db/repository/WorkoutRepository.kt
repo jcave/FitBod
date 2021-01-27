@@ -28,8 +28,6 @@ class WorkoutRepository(application: Application) {
     val workoutsWithUserWorkouts: LiveData<List<WorkoutsWithUserWorkouts>> =
         workoutsWithUserWorkoutsDao.getWorkoutsWithUserWorkouts()
 
-    val userWorkouts: LiveData<List<UserWorkout>> = userWorkoutDao.getUserWorkouts()
-
     private fun insertUserWorkouts(userWorkouts: List<UserWorkout>) {
         userWorkoutDao.insertAllUserWorkouts(userWorkouts)
     }
@@ -97,7 +95,6 @@ class WorkoutRepository(application: Application) {
         parseUserData(userDataRecords)
     }
 
-
     private fun parseUserData(userDataRecords: List<UserDataRecord>) {
         val userWorkouts = mutableListOf<UserWorkout>()
 
@@ -132,4 +129,5 @@ class WorkoutRepository(application: Application) {
         val originalDate = SimpleDateFormat("MMM dd yy")
         return originalDate.parse(date)
     }
+
 }

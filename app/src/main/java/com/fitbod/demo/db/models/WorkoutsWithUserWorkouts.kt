@@ -3,7 +3,6 @@ package com.fitbod.demo.db.models
 import androidx.room.Embedded
 import androidx.room.Relation
 
-
 data class WorkoutsWithUserWorkouts(
 
     @Embedded val workout: Workout,

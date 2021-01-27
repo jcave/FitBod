@@ -1,24 +1,59 @@
 package com.fitbod.demo
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LifecycleRegistry
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import com.fitbod.demo.db.FitbodDatabase
+import com.fitbod.demo.db.dao.UserWorkoutDao
+import com.fitbod.demo.db.models.UserWorkout
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
+import java.util.*
 
-import org.junit.Assert.*
-
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
+    private lateinit var userWorkoutDao: UserWorkoutDao
+    private lateinit var db: FitbodDatabase
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+
+    @Before
+    fun createDb() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(
+            context, FitbodDatabase::class.java
+        ).build()
+        userWorkoutDao = db.userWorkoutDao()
+    }
+
+    @After
+    @Throws(IOException::class)
+    fun closeDb() {
+        db.close()
+    }
+
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.fitbod.demo", appContext.packageName)
+    @Throws(Exception::class)
+    fun writeUserWorkoutAndReadInList() {
+        val userWorkout = UserWorkout(0, Date(), 1, 5, 100, 1, 125)
+        userWorkoutDao.insertAllUserWorkouts(listOf(userWorkout))
+
+        userWorkoutDao.getUserWorkouts().observeForever {
+            assertEquals(1, it.size)
+        }
+
     }
 }

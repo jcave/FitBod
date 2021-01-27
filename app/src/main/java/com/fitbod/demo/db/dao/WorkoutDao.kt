@@ -9,6 +9,7 @@ import com.fitbod.demo.db.models.Workout
 
 @Dao
 interface WorkoutDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWorkouts(workouts: List<Workout>)
 

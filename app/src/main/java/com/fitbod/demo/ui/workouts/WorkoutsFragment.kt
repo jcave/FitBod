@@ -13,9 +13,7 @@ class WorkoutsFragment : Fragment() {
 
     private var _binding: FragmentWorkoutsBinding? = null
     private val binding get() = _binding!!
-
     private var workoutAdapter: WorkoutsAdapter? = null
-
     private lateinit var workoutsFragmentViewModel: WorkoutsFragmentViewModel
 
     override fun onCreateView(
@@ -36,9 +34,10 @@ class WorkoutsFragment : Fragment() {
                 updateAdapter(workoutViewModels)
                 if (workoutViewModels.isEmpty()) {
 
-                    /* Normally I'd populate the db from a .db file when it's created, but it sounded like
-                     there was a desire to throw additional csv files at this to test it. Just replace the
-                     csv in the res > raw folder then do an initial load again. */
+                    /* Normally I'd populate the db from a .db file when it's created, but it   */
+                    /* sounded like there was a desire to throw additional csv files at this to */
+                    /* test it. Just replace the csv in the res > raw folder then do an         */
+                    /* initial load again. */
 
                     workoutsFragmentViewModel.populateDatabase()
                 }

@@ -45,5 +45,4 @@ abstract class FitbodDatabase : RoomDatabase() {
         }
     }
 
-
 }
