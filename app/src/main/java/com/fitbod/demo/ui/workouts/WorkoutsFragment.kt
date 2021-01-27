@@ -32,6 +32,9 @@ class WorkoutsFragment : Fragment() {
 
         workoutsFragmentViewModel.userWorkouts.observe(viewLifecycleOwner, { userWorkouts ->
             updateAdapter(userWorkouts)
+            if (userWorkouts.isEmpty()) {
+                binding.buttonLoad.visibility = View.VISIBLE
+            }
         })
 
         workoutAdapter = WorkoutsAdapter(emptyList())
@@ -44,6 +47,7 @@ class WorkoutsFragment : Fragment() {
 
         binding.buttonLoad.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
+            binding.buttonLoad.visibility = View.INVISIBLE
             workoutsFragmentViewModel.populateDatabase()
         }
 

@@ -6,11 +6,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.fitbod.demo.R
 import com.fitbod.demo.db.FitbodDatabase
+import com.fitbod.demo.db.models.UserDataRecord
 import com.fitbod.demo.db.models.UserWorkout
+import com.fitbod.demo.db.models.Workout
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -18,54 +21,52 @@ class WorkoutRepository(application: Application) {
 
     private val db = FitbodDatabase.getDatabase(application)
     private val userWorkoutDao = db.userWorkoutDao()
+    private val workoutDao = db.workoutDao()
 
     val getWorkouts: LiveData<List<UserWorkout>> = userWorkoutDao.getUserWorkouts()
 
-    fun insertUserWorkouts(userWorkouts: List<UserWorkout>) {
+    private fun insertUserWorkouts(userWorkouts: List<UserWorkout>) {
         userWorkoutDao.insertAllUserWorkouts(userWorkouts)
     }
 
-    suspend fun prePopulateDatabase(context: Context) {
+    private fun insertWorkouts(workouts: List<Workout>) {
+        workoutDao.insertWorkouts(workouts)
+    }
+
+    private fun getWorkouts(): List<Workout> {
+        return workoutDao.getAll()
+    }
+
+    fun prePopulateDatabase(context: Context) {
 
         var fileReader: BufferedReader? = null
 
         try {
-            val userWorkouts = ArrayList<UserWorkout>()
+            val userDataRecords = ArrayList<UserDataRecord>()
             var line: String?
 
             val input: InputStream = context.resources.openRawResource(R.raw.workouts)
             fileReader = BufferedReader(InputStreamReader(input))
-//                fileReader = BufferedReader(FileReader("workouts.csv"))
-
-//                // Read CSV header
-//                fileReader.readLine()
 
             // Read the file line by line starting from the second line
             line = fileReader.readLine()
             while (line != null) {
                 val tokens = line.split(",")
                 if (tokens.isNotEmpty()) {
-                    val userWorkout = UserWorkout(
-                        0,
-                        Date(), //tokens[0],
+                    val userDataRecord = UserDataRecord(
+                        tokens[0],
+                        tokens[1],
                         tokens[2].toInt(),
                         tokens[3].toInt(),
-                        tokens[4].toInt(),
-                        0 //tokens[2]
+                        tokens[4].toInt()
                     )
-                    userWorkouts.add(userWorkout)
+                    userDataRecords.add(userDataRecord)
                 }
 
                 line = fileReader.readLine()
             }
 
-            // Print the new customer list
-            Log.i("WORKOUT", "Count: ${userWorkouts.size}")
-            for (userWorkout in userWorkouts) {
-                Log.i("WORKOUT", "user workout: ${userWorkout.weight}")
-            }
-
-            userWorkoutDao.insertAllUserWorkouts(userWorkouts)
+            parseWorkouts(userDataRecords)
 
         } catch (e: Exception) {
             Log.i("WORKOUT", "Reading CSV Error!")
@@ -81,4 +82,54 @@ class WorkoutRepository(application: Application) {
 
     }
 
+    private fun parseWorkouts(userDataRecords: List<UserDataRecord>) {
+        val workoutNames = userDataRecords.map { it.name }.toSet()
+        val workouts = mutableListOf<Workout>()
+
+        workoutNames.forEach { workoutName ->
+            workouts.add(Workout(name = workoutName))
+        }
+
+        insertWorkouts(workouts)
+        parseUserData(userDataRecords)
+    }
+
+
+    private fun parseUserData(userDataRecords: List<UserDataRecord>) {
+        val userWorkouts = mutableListOf<UserWorkout>()
+
+        val workoutHash: HashMap<String, Int> = hashMapOf()
+        getWorkouts().forEach {
+            workoutHash[it.name] = it.id
+        }
+
+        userDataRecords.forEach { dataRecord ->
+            val userWorkout = UserWorkout().apply {
+                sets = dataRecord.sets
+                reps = dataRecord.reps
+                weight = dataRecord.weight
+                oneRepMax = calcOneRM(dataRecord.reps, dataRecord.weight)
+                workoutId = workoutHash[dataRecord.name] ?: 0
+                date = parseDate(dataRecord.date) ?: Date()
+            }
+
+            userWorkouts.add(userWorkout)
+        }
+
+        insertUserWorkouts(userWorkouts)
+
+    }
+
+    private fun calcOneRM(reps: Int, weight: Int): Int {
+        return (weight.toDouble() * (36 / (37 - reps))).toInt()
+    }
+
+    private fun parseDate(date: String): Date? {
+        //"Nov 07 2016"
+        val originalDate = SimpleDateFormat("MMM dd yy")
+
+        val parsedDate = originalDate.parse(date)
+        Log.i("WORKOUT", "date: ${parsedDate.toString()}")
+        return parsedDate
+    }
 }

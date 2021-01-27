@@ -9,5 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="fitbod_red">#FFF26A5D</color>
     <color name="fitbod_red_darker">#FFD95144</color>
-    <color name="lighterGrey">#cccccc</color>
+    <color name="dividerLight">#cccccc</color>
+    <color name="dividerDark">#3A3F41</color>
+    <color name="secondaryGrey">#8A8C8D</color>
+    <color name="greyDark">#DDDDDD</color>
+    <color name="greyLight">#999999</color>
+    <color name="darkBackground">#23282A</color>
 </resources>

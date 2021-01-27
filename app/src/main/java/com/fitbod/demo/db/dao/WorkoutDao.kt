@@ -10,12 +10,12 @@ import com.fitbod.demo.db.models.Workout
 @Dao
 interface WorkoutDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllMovements(workouts: List<Workout>)
+    fun insertWorkouts(workouts: List<Workout>)
 
     @Query("SELECT * FROM Workout WHERE id=:id ")
     fun getById(id: Int): LiveData<Workout>
 
     @Query("SELECT * FROM Workout")
-    fun getAll(): LiveData<List<Workout>>
+    fun getAll(): List<Workout>
 
 }

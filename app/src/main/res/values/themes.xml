@@ -24,7 +24,11 @@
     <style name="Theme.FitbodDemo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Divider">
-        <item name="android:background">@color/lighterGrey</item>
+        <item name="android:background">@color/dividerLight</item>
+    </style>
+
+    <style name="TextPrimary">
+        <item name="android:textColor">@color/greyLight</item>
     </style>
 
 </resources>
