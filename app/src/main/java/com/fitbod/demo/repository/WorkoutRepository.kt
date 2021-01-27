@@ -1,4 +1,4 @@
-package com.fitbod.demo.db.repository
+package com.fitbod.demo.repository
 
 import android.app.Application
 import android.content.Context

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.fitbod.demo.db.models.WorkoutsWithUserWorkouts
-import com.fitbod.demo.db.repository.WorkoutRepository
+import com.fitbod.demo.repository.WorkoutRepository
 
 class ExerciseFragmentViewModel(workoutId: Int, application: Application) :
     AndroidViewModel(application) {

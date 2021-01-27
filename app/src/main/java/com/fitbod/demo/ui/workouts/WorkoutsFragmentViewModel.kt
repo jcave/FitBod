@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.fitbod.demo.db.models.WorkoutsWithUserWorkouts
-import com.fitbod.demo.db.repository.WorkoutRepository
+import com.fitbod.demo.repository.WorkoutRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
