@@ -18,4 +18,6 @@ class ExerciseFragmentViewModel(workoutId: Int, application: Application) :
     val workoutWithUserWorkouts: LiveData<WorkoutsWithUserWorkouts> =
         repository.getWorkoutWithUserWorkouts(workoutId)
 
+
+
 }
