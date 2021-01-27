@@ -1,8 +1,6 @@
 package com.fitbod.demo.ui.exercise
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.fitbod.demo.R
 import com.fitbod.demo.databinding.FragmentExerciseBinding
+import com.fitbod.demo.db.models.UserWorkout
 import com.fitbod.demo.db.models.WorkoutsWithUserWorkouts
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -20,7 +19,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.SimpleFormatter
 
 class ExerciseFragment : Fragment() {
 
@@ -29,6 +27,19 @@ class ExerciseFragment : Fragment() {
 
     private lateinit var exerciseFragmentViewModel: ExerciseFragmentViewModel
     private val args: ExerciseFragmentArgs by navArgs()
+
+    private val xValueFormatter: ValueFormatter = object : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            val formatDate = SimpleDateFormat("MMM dd")
+            return formatDate.format(Date(value.toLong()))
+        }
+    }
+
+    private val yValueFormatter: ValueFormatter = object : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return "${value.toInt()} lbs"
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,76 +58,84 @@ class ExerciseFragment : Fragment() {
             updateUI(it)
         })
 
+        binding.workoutInfo.txtRecord.text = args.workoutRepMax.toString()
+        binding.workoutInfo.txtWorkout.text = args.workoutName
+
         return binding.root
     }
-
 
     private fun updateUI(workoutData: WorkoutsWithUserWorkouts) {
         binding.workoutInfo.txtWorkout.text = workoutData.workout.name
         binding.workoutInfo.txtRecord.text =
             workoutData.userWorkouts.maxByOrNull { it.oneRepMax }?.oneRepMax.toString()
 
-        val entries = workoutData.userWorkouts
-            .sortedBy { it.date }
-            .map {
-            Entry(it.date.time.toFloat(), it.oneRepMax.toFloat())
-        }
-
-        entries.forEach {
-            Log.i("OUTPUT", it.x.toString())
-        }
-
-        val formatter: ValueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-
-                val formatDate = SimpleDateFormat("MMM d")
-                val dateString = formatDate.format(Date(value.toLong()))
-
-                return dateString
-            }
-        }
-
+        val colorIdRed = requireContext().getColor(R.color.fitbod_red)
+        val colorIdGrey = requireContext().getColor(R.color.greyDark)
 
         with(binding.dataChart) {
-            axisLeft.isEnabled = true
-            axisRight.isEnabled = true
-            legend.isEnabled = true
-
             setTouchEnabled(true)
             isDragEnabled = true
-            setScaleEnabled(true)
+            isScaleXEnabled = true
+            isScaleYEnabled = false
+            description.isEnabled = false
+            extraBottomOffset = 10f
 
-            legend.textColor = requireContext().getColor(R.color.fitbod_red)
+            axisLeft.isEnabled = true
+            axisLeft.textColor = colorIdGrey
+            axisLeft.valueFormatter = yValueFormatter
+            axisLeft.textSize = 13f
+            axisLeft.granularity = 15f
+            axisLeft.isGranularityEnabled = true
 
-            xAxis.textColor = requireContext().getColor(R.color.greyDark)
+            axisRight.isEnabled = false
+
+            xAxis.textColor = colorIdGrey
             xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.labelCount = 6
-            xAxis.valueFormatter = formatter
-            xAxis.labelRotationAngle = -45f
+            xAxis.valueFormatter = xValueFormatter
+            xAxis.textSize = 13f
+
+            legend.textColor = colorIdRed
             legend.isEnabled = false
-            axisLeft.textColor = requireContext().getColor(R.color.greyDark)
         }
 
-        val lineDataSet1 = LineDataSet(entries, "").apply {
-            color = requireContext().getColor(R.color.fitbod_red)
+        val entries = calculateDataSetEntries(workoutData.userWorkouts)
+        val dataSet = LineDataSet(entries, "").apply {
+            color = colorIdRed
             setDrawHighlightIndicators(true)
-            lineWidth = 3f
-            setCircleColor(R.color.fitbod_red)
-            circleHoleColor = requireContext().getColor(R.color.fitbod_red)
-            circleHoleRadius = 3f
-            highLightColor = requireContext().getColor(R.color.fitbod_red)
+            lineWidth = 2f
+            circleRadius = 5f
+            setCircleColor(colorIdRed)
+            circleHoleColor = colorIdRed
+            setDrawCircleHole(true)
+            highLightColor = colorIdRed
+            setDrawValues(false)
         }
 
-
-        val dataSets = arrayListOf<ILineDataSet>(lineDataSet1)
-
-        val data: LineData = LineData(dataSets).apply {
-            setValueTextColor(R.color.fitbod_red)
-
-        }
+        val dataSets = arrayListOf<ILineDataSet>(dataSet)
+        val data = LineData(dataSets)
 
         binding.dataChart.data = data
         binding.dataChart.invalidate()
+        binding.dataChart.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
+    }
 
+    private fun calculateDataSetEntries(userWorkouts: List<UserWorkout>): List<Entry> {
+        // grouping all entries by the day they were on.
+
+        val output = userWorkouts.groupBy({
+            val formatDate = SimpleDateFormat("MM/dd/yyyy")
+            formatDate.format(it.date)
+        }, { it })
+
+        return output.keys.map { key ->
+            val formatDate = SimpleDateFormat("MM/dd/yyyy")
+            val date = formatDate.parse(key)
+            val max = output[key]?.maxByOrNull { it.oneRepMax }?.oneRepMax
+
+            Entry(date!!.time.toFloat(), max!!.toFloat())
+        }.sortedBy {
+            it.x
+        }
     }
 }

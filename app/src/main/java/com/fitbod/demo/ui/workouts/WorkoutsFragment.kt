@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fitbod.demo.databinding.FragmentWorkoutsBinding
-import com.fitbod.demo.db.models.UserWorkout
 
 class WorkoutsFragment : Fragment() {
 
@@ -30,12 +29,20 @@ class WorkoutsFragment : Fragment() {
         workoutsFragmentViewModel =
             ViewModelProvider(this).get(WorkoutsFragmentViewModel::class.java)
 
-        workoutsFragmentViewModel.workoutViewModels.observe(viewLifecycleOwner, { workoutViewModels ->
-            updateAdapter(workoutViewModels)
-            if (workoutViewModels.isEmpty()) {
-                binding.buttonLoad.visibility = View.VISIBLE
-            }
-        })
+        workoutsFragmentViewModel.workoutViewModels.observe(
+            viewLifecycleOwner,
+            { workoutViewModels ->
+
+                updateAdapter(workoutViewModels)
+                if (workoutViewModels.isEmpty()) {
+
+                    /* Normally I'd populate the db from a .db file when it's created, but it sounded like
+                     there was a desire to throw additional csv files at this to test it. Just replace the
+                     csv in the res > raw folder then do an initial load again. */
+
+                    workoutsFragmentViewModel.populateDatabase()
+                }
+            })
 
         workoutAdapter = WorkoutsAdapter(emptyList())
         val workoutLayoutManager = LinearLayoutManager(requireContext())
@@ -45,18 +52,14 @@ class WorkoutsFragment : Fragment() {
             adapter = workoutAdapter
         }
 
-        binding.buttonLoad.setOnClickListener {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.buttonLoad.visibility = View.INVISIBLE
-            workoutsFragmentViewModel.populateDatabase()
-        }
-
         return binding.root
     }
 
     private fun updateAdapter(userWorkouts: List<WorkoutViewModel>) {
-        binding.progressBar.visibility = View.INVISIBLE
-        binding.buttonLoad.visibility = View.INVISIBLE
+        if (userWorkouts.isNotEmpty()) {
+            binding.progressBar.visibility = View.INVISIBLE
+        }
+
         workoutAdapter?.update(userWorkouts)
     }
 

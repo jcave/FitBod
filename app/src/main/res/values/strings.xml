@@ -10,7 +10,9 @@
     <!-- menu -->
     <string name="menu_workouts">Workouts</string>
 
-    <!-- menu -->
+    <!-- text -->
     <string name="text_load_data_from_file">Load Data From File</string>
+    <string name="text_one_rep_max">1 RM Record</string>
+    <string name="text_lbs">lbs</string>
 
 </resources>

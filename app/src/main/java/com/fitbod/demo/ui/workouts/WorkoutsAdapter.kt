@@ -39,7 +39,8 @@ class WorkoutsAdapter(private var workoutViewModels: List<WorkoutViewModel>) :
                 val action =
                     WorkoutsFragmentDirections.actionWorkoutsToExercise(
                         workoutViewModel.workoutId,
-                        workoutViewModel.workoutName
+                        workoutViewModel.workoutName,
+                        workoutViewModel.oneRepMax
                     )
                 it.findNavController().navigate(action)
             }

@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val db = FitbodDatabase.getDatabase(application)
     }
 
     override fun onSupportNavigateUp(): Boolean {

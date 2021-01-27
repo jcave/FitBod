@@ -28,5 +28,9 @@
             android:name="workoutName"
             android:defaultValue=""
             app:argType="string" />
+        <argument
+            android:name="workoutRepMax"
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
 </navigation>
