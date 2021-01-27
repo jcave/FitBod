@@ -16,6 +16,10 @@ interface UserWorkoutDao {
     @Query("SELECT * FROM UserWorkout WHERE workoutId=:workoutId ")
     fun getByWorkoutId(workoutId: Int): LiveData<List<UserWorkout>>
 
+    @Query("SELECT * FROM UserWorkout")
+    fun getUserWorkouts(): LiveData<List<UserWorkout>>
+
+
 //    @Query("SELECT workoutId, MAX(oneRepMax) FROM UserWorkout GROUP BY workoutId")
 //    fun getOneRepMax(): LiveData<Any>
 

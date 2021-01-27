@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.fitbod.demo.R
+import com.fitbod.demo.db.models.UserWorkout
 
-class WorkoutsAdapter(private var workoutViewModels: List<WorkoutViewModel>) :
+class WorkoutsAdapter(private var workoutViewModels: List<UserWorkout>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -31,8 +32,8 @@ class WorkoutsAdapter(private var workoutViewModels: List<WorkoutViewModel>) :
         val workoutViewModel = workoutViewModels[position]
 
         holder.apply {
-            workoutName.text = workoutViewModel.name
-            workoutRecord.text = workoutViewModel.record.toString()
+            workoutName.text = workoutViewModel.reps.toString()
+            workoutRecord.text = workoutViewModel.weight.toString()
 
             itemView.setOnClickListener {
 //                val action = WorkoutsFragmentDirections.ac(workoutViewModel.id)
@@ -42,7 +43,7 @@ class WorkoutsAdapter(private var workoutViewModels: List<WorkoutViewModel>) :
         }
     }
 
-    fun update(viewModels: List<WorkoutViewModel>) {
+    fun update(viewModels: List<UserWorkout>) {
         workoutViewModels = viewModels
         notifyDataSetChanged()
     }

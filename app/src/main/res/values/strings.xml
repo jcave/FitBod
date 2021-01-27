@@ -7,5 +7,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- menu -->
     <string name="menu_workouts">Workouts</string>
+
+    <!-- menu -->
+    <string name="text_load_data_from_file">Load Data From File</string>
+
 </resources>

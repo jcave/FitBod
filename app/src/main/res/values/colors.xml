@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="fitbod_red">#FFF26A5D</color>
     <color name="fitbod_red_darker">#FFD95144</color>
+    <color name="lighterGrey">#cccccc</color>
 </resources>

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fitbod.demo.databinding.FragmentWorkoutsBinding
+import com.fitbod.demo.db.models.UserWorkout
 
 class WorkoutsFragment : Fragment() {
 
@@ -30,9 +30,9 @@ class WorkoutsFragment : Fragment() {
         workoutsFragmentViewModel =
             ViewModelProvider(this).get(WorkoutsFragmentViewModel::class.java)
 
-//        workoutsFragmentViewModel.text.observe(viewLifecycleOwner, Observer {
-//            //
-//        })
+        workoutsFragmentViewModel.userWorkouts.observe(viewLifecycleOwner, { userWorkouts ->
+            updateAdapter(userWorkouts)
+        })
 
         workoutAdapter = WorkoutsAdapter(emptyList())
         val workoutLayoutManager = LinearLayoutManager(requireContext())
@@ -42,9 +42,19 @@ class WorkoutsFragment : Fragment() {
             adapter = workoutAdapter
         }
 
+        binding.buttonLoad.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
+            workoutsFragmentViewModel.populateDatabase()
+        }
+
         return binding.root
     }
 
+    private fun updateAdapter(userWorkouts: List<UserWorkout>) {
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.buttonLoad.visibility = View.INVISIBLE
+        workoutAdapter?.update(userWorkouts)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
