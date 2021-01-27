@@ -14,8 +14,6 @@ import kotlinx.coroutines.launch
 class WorkoutsFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: WorkoutRepository = WorkoutRepository(application)
-    val userWorkouts: LiveData<List<UserWorkout>> = repository.userWorkouts
-
     private val workoutsWithUserWorkouts: LiveData<List<WorkoutsWithUserWorkouts>> = repository.workoutsWithUserWorkouts
 
     val workoutViewModels: LiveData<List<WorkoutViewModel>> = Transformations.map(workoutsWithUserWorkouts) {

@@ -27,6 +27,7 @@ class WorkoutRepository(application: Application) {
 
     val workoutsWithUserWorkouts: LiveData<List<WorkoutsWithUserWorkouts>> =
         workoutsWithUserWorkoutsDao.getWorkoutsWithUserWorkouts()
+
     val userWorkouts: LiveData<List<UserWorkout>> = userWorkoutDao.getUserWorkouts()
 
     private fun insertUserWorkouts(userWorkouts: List<UserWorkout>) {
@@ -41,19 +42,21 @@ class WorkoutRepository(application: Application) {
         return workoutDao.getAll()
     }
 
-    fun prePopulateDatabase(context: Context) {
+    fun getWorkoutWithUserWorkouts(workoutId: Int): LiveData<WorkoutsWithUserWorkouts> {
+        return workoutsWithUserWorkoutsDao.getWorkoutWithUserWorkouts(workoutId)
+    }
 
+    fun prePopulateDatabase(context: Context) {
         var fileReader: BufferedReader? = null
 
         try {
             val userDataRecords = ArrayList<UserDataRecord>()
             var line: String?
-
             val input: InputStream = context.resources.openRawResource(R.raw.workouts)
-            fileReader = BufferedReader(InputStreamReader(input))
 
-            // Read the file line by line starting from the second line
+            fileReader = BufferedReader(InputStreamReader(input))
             line = fileReader.readLine()
+
             while (line != null) {
                 val tokens = line.split(",")
                 if (tokens.isNotEmpty()) {
@@ -66,12 +69,9 @@ class WorkoutRepository(application: Application) {
                     )
                     userDataRecords.add(userDataRecord)
                 }
-
                 line = fileReader.readLine()
             }
-
             parseWorkouts(userDataRecords)
-
         } catch (e: Exception) {
             Log.i("WORKOUT", "Reading CSV Error!")
             e.printStackTrace()
@@ -83,7 +83,6 @@ class WorkoutRepository(application: Application) {
                 e.printStackTrace()
             }
         }
-
     }
 
     private fun parseWorkouts(userDataRecords: List<UserDataRecord>) {

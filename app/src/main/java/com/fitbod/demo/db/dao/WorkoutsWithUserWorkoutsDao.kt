@@ -13,4 +13,7 @@ interface WorkoutsWithUserWorkoutsDao {
     @Query("SELECT * FROM Workout")
     fun getWorkoutsWithUserWorkouts(): LiveData<List<WorkoutsWithUserWorkouts>>
 
+    @Transaction
+    @Query("SELECT * FROM Workout WHERE id=:workoutId LIMIT 1")
+    fun getWorkoutWithUserWorkouts(workoutId: Int): LiveData<WorkoutsWithUserWorkouts>
 }
