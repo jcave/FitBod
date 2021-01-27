@@ -14,6 +14,8 @@ data class UserWorkout(
     var reps: Int = 0,
     var weight: Int = 0,
     var workoutId: Int = 0,
-    var oneRepMax: Int = 0
 
-)
+    ) {
+
+    val oneRepMax: Int get() = (weight.toDouble() * (36.0 / (37.0 - reps))).toInt()
+}

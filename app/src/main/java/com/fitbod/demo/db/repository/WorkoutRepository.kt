@@ -108,7 +108,6 @@ class WorkoutRepository(application: Application) {
                 sets = dataRecord.sets
                 reps = dataRecord.reps
                 weight = dataRecord.weight
-                oneRepMax = calcOneRM(dataRecord.reps, dataRecord.weight)
                 workoutId = workoutHash[dataRecord.name] ?: 0
                 date = parseDate(dataRecord.date) ?: Date()
             }
@@ -118,10 +117,6 @@ class WorkoutRepository(application: Application) {
 
         insertUserWorkouts(userWorkouts)
 
-    }
-
-    private fun calcOneRM(reps: Int, weight: Int): Int {
-        return (weight.toDouble() * (36.0 / (37.0 - reps))).toInt()
     }
 
     private fun parseDate(date: String): Date? {

@@ -21,7 +21,7 @@ import java.io.IOException
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class UserWorkoutTests {
 
     private lateinit var userWorkoutDao: UserWorkoutDao
     private lateinit var db: FitbodDatabase
@@ -48,11 +48,16 @@ class ExampleInstrumentedTest {
     @Test
     @Throws(Exception::class)
     fun writeUserWorkoutAndReadInList() {
-        val userWorkout = UserWorkout(0, Date(), 1, 5, 100, 1, 125)
+        val userWorkout = UserWorkout(0, Date(), 1, 5, 100, 1)
         userWorkoutDao.insertAllUserWorkouts(listOf(userWorkout))
 
         userWorkoutDao.getUserWorkouts().observeForever {
             assertEquals(1, it.size)
+            assertEquals(1, it.first().sets)
+            assertEquals(5,  it.first().reps)
+            assertEquals(100,  it.first().weight)
+            assertEquals(1,  it.first().id)
+            assertEquals(112,  it.first().oneRepMax)
         }
 
     }
