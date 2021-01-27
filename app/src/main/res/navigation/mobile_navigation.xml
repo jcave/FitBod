@@ -18,6 +18,15 @@
     <fragment
         android:id="@+id/nav_exercise"
         android:name="com.fitbod.demo.ui.exercise.ExerciseFragment"
-        android:label="Exercise"
-        tools:layout="@layout/fragment_exercise" />
+        android:label="{workoutName}"
+        tools:layout="@layout/fragment_exercise">
+        <argument
+            android:name="workoutId"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="workoutName"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 </navigation>

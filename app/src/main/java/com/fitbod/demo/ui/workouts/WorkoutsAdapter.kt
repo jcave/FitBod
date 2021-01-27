@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.fitbod.demo.R
 
@@ -35,9 +36,12 @@ class WorkoutsAdapter(private var workoutViewModels: List<WorkoutViewModel>) :
             workoutRecord.text = workoutViewModel.oneRepMax.toString()
 
             itemView.setOnClickListener {
-
-//                val action = WorkoutsFragmentDirections.ac(workoutViewModel.id)
-//                it.findNavController().navigate(action)
+                val action =
+                    WorkoutsFragmentDirections.actionWorkoutsToExercise(
+                        workoutViewModel.workoutId,
+                        workoutViewModel.workoutName
+                    )
+                it.findNavController().navigate(action)
             }
 
         }
